@@ -10,6 +10,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LoginRequestDTO {
+    // todo add spring data validation @NotBlank for example
     private String username;
+    // todo add spring data validation @NotBlank for example
     private String password;
 }

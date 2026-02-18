@@ -11,6 +11,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * // todo
+    @see org.springframework.security.core.userdetails.UserDetails
+ */
 @Entity
 @Getter
 @Setter
@@ -42,4 +46,6 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private UserStatus status;
+
+    // todo add equals & hashcode methods to each entity
 }

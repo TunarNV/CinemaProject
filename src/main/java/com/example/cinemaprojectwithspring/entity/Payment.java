@@ -21,6 +21,7 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // todo ödəniş cəhdi bir neçə dənə ola bilər. uğurlu, uğursuz, müxtəlif card ilə. Yəni ManyToOne olmalıdır
     @OneToOne
     @JoinColumn(name = "ticket_id", nullable = false, unique = true)
     private Ticket ticket;

@@ -13,6 +13,12 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/*
+    todo
+        məsləhətdir ki, bir  service daxilində 1 repo çağrılsın. Digərləri service üzərindən çağrılsın
+        Məsələn, UserRepository əvəzinə UserService, SeatService və s. separation of concerns
+        bu bütün yerlərə aiddir
+ */
 @Service
 @RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {

@@ -23,6 +23,12 @@ public class CinemaHallServiceImpl implements CinemaHallService {
     private final CinemaRepository cinemaRepository;
     private final CinemaHallMapper hallMapper;
 
+    /*
+       todo
+           create üçün mapstruct istifadə edilə bilər.
+           cinemaRepository.findById() əlavə metoda çıxarıla bilər.
+           RuntimeException əvəzinə başqa exception ola bilər
+    */
     @Override
     public CinemaHallResponseDTO createHall(CinemaHallRequestDTO dto) {
         Cinema cinema = cinemaRepository.findById(dto.getCinemaId()).orElseThrow(()->
@@ -49,6 +55,10 @@ public class CinemaHallServiceImpl implements CinemaHallService {
         return hallRepository.findAll().stream().map(hallMapper::toDTO).toList();
     }
 
+    /*
+        todo
+            update üçün mapstruct istifadə edilə bilər.
+     */
     @Override
     public CinemaHallResponseDTO updateHall(Long id, CinemaHallRequestDTO dto) {
         CinemaHall hall = hallRepository.findById(id).orElseThrow(() -> new RuntimeException("Hall not found"));
@@ -59,6 +69,7 @@ public class CinemaHallServiceImpl implements CinemaHallService {
         return hallMapper.toDTO(hallRepository.save(hall));
     }
 
+    // todo RuntimeException əvəzinə başqa exception ola bilər
     @Override
     public void deleteHallById(Long id) {
         if (!hallRepository.existsById(id)) throw new RuntimeException("Hall not found");

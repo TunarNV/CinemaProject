@@ -16,6 +16,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CinemaRequestDTO {
+
+    // todo add spring data validation @NotBlank
     private String name;
 
     private String address;

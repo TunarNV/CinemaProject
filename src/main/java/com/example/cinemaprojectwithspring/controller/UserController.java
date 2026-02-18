@@ -14,6 +14,7 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
+    // todo Page<UserResponseDTO> qaytarmaq və Pageable əldə etmək daha düzgündür
     @GetMapping
     public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());

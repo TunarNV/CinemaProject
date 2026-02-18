@@ -15,12 +15,17 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Table(name = "seats")
 public class Seat {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private int row;
+
     private int number;
+
     private BigDecimal price;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cinema_hall_id", nullable = false)
     private CinemaHall cinemaHall;

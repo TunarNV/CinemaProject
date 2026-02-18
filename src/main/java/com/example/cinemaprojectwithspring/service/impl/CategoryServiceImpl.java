@@ -13,6 +13,11 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+/*
+    todo
+        Bütün service qatlarında Transactional annotationu istifadə edilməlidir
+        OSİV (open-session in view haqqında məlumat al)
+ */
 @Service
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
@@ -21,6 +26,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryResponseDTO createCategory(CategoryRequestDTO dto) {
+        // todo məsləhətdir ki, RuntimeException əvəzinə ya spesifik exception atasan yada ki, ResponseStatusException atasan
         if (categoryRepository.existsByName(dto.getName())) throw new RuntimeException("Category exists");
         return categoryMapper.toDTO(categoryRepository.save(categoryMapper.toEntity(dto)));
     }
