@@ -3,6 +3,8 @@ package com.example.cinemaprojectwithspring.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Set;
+
 @Entity
 @Getter
 @Setter
@@ -14,10 +16,12 @@ public class CinemaHall {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private Integer capacity;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "cinema_id", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cinema_id", nullable = false)
     private Cinema cinema;
+
+    @OneToMany(mappedBy = "cinemaHall")
+    private Set<Seat> seats;
 }
 

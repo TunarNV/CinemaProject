@@ -22,7 +22,7 @@ public class MovieController {
 
     @PostMapping
     public MovieResponseDTO createMovie(@RequestBody @Valid MovieRequestDTO requestDTO){
-        return movieService.addMovie(requestDTO);
+        return movieService.createMovie(requestDTO);
     }
 
     @PutMapping("/{id}")

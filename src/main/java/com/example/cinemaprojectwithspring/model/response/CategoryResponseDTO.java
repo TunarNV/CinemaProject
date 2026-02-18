@@ -9,12 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MovieResponseDTO {
+public class CategoryResponseDTO {
     private Long id;
-    private String title;
-    private String description;
-    private int durationMinutes;
-    private String genre;
-    private double rating;
-    private CategoryResponseDTO category;
+    private String name;
 }

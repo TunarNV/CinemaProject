@@ -24,12 +24,13 @@ public class MovieServiceImpl implements MovieService {
     private final CategoryRepository categoryRepository;
 
     @Override
-    public MovieResponseDTO addMovie(MovieRequestDTO requestDTO) {
-        Category category = categoryRepository.findByName(requestDTO.getCategoryName());
+    public MovieResponseDTO createMovie(MovieRequestDTO requestDTO) {
+        Category category = categoryRepository.findById(requestDTO.getCategoryId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Category not found: " + requestDTO.getCategoryId()));
         Movie movie = movieMapper.toMovieEntity(requestDTO);
         movie.setCategory(category);
-        Movie savedMovie = movieRepository.save(movie);
-        return movieMapper.toMovieDTO(savedMovie);
+        return movieMapper.toMovieDTO(movieRepository.save(movie));
     }
 
     @Override
@@ -46,18 +47,20 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public MovieResponseDTO update(Long id, MovieRequestDTO movieRequestDTO){
-        Movie movie = movieRepository.findById(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,
+        Movie movie = movieRepository.findById(id).orElseThrow(() ->
+                new ResponseStatusException
+                (HttpStatus.NOT_FOUND,
                 "Movie not found: " + id));
-        Category category;
-        if (movieRequestDTO.getCategoryName() != null) {
-            category = categoryRepository.findByName(movieRequestDTO.getCategoryName());
-            movie.setCategory(category);
-        }
-        else {
-            category = movie.getCategory();
-        }
-        MovieResponseDTO movieResponseDTO = movieMapper.toMovieDTO(movieRepository.save(movie));
-        return movieResponseDTO;
+        Category category = categoryRepository.findById(movieRequestDTO.getCategoryId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Category not found: " + movieRequestDTO.getCategoryId()));
+        movie.setTitle(movieRequestDTO.getTitle());
+        movie.setDescription(movieRequestDTO.getDescription());
+        movie.setDurationMinutes(movieRequestDTO.getDurationMinutes());
+        movie.setGenre(movieRequestDTO.getGenre());
+        movie.setRating(movieRequestDTO.getRating());
+        movie.setCategory(category);
+        return movieMapper.toMovieDTO(movieRepository.save(movie));
     }
 
     @Override

@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface MovieService {
 
-    MovieResponseDTO addMovie(MovieRequestDTO requestDTO);
+    MovieResponseDTO createMovie(MovieRequestDTO requestDTO);
 
     List<MovieResponseDTO> getAllMovies();
 

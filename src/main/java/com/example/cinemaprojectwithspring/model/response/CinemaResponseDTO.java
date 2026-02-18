@@ -17,7 +17,7 @@ import java.util.List;
 public class CinemaResponseDTO {
     private Long id;
     private String name;
-    private String location;
+    private String address;
     private String phoneNumber;
 
     @JsonFormat(pattern = "HH:mm:ss")
@@ -26,5 +26,4 @@ public class CinemaResponseDTO {
     @JsonFormat(pattern = "HH:mm:ss")
     private LocalTime closeTime;
 
-    private List<CinemaHall> hallNames;
 }

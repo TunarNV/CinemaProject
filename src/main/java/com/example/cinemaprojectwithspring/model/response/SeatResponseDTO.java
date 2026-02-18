@@ -5,16 +5,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MovieResponseDTO {
+public class SeatResponseDTO {
     private Long id;
-    private String title;
-    private String description;
-    private int durationMinutes;
-    private String genre;
-    private double rating;
-    private CategoryResponseDTO category;
+    private int row;
+    private int number;
+    private BigDecimal price;
+    private CinemaHallResponseDTO cinemaHall;
 }

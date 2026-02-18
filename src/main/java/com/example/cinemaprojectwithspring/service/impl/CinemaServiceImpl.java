@@ -26,19 +26,8 @@ public class CinemaServiceImpl implements CinemaService {
 
     @Override
     public CinemaResponseDTO createCinema(CinemaRequestDTO dto) {
-        Cinema cinema = cinemaMapper.toCinemaEntity(dto);
-        List<CinemaHall> halls = new ArrayList<>();
-        if (dto.getHallNames() != null) {
-            for (String hallName : dto.getHallNames()) {
-                CinemaHall hall = new CinemaHall();
-                hall.setName(hallName);
-                hall.setCinema(cinema);
-                halls.add(hall);
-            }
-        }
-        cinema.setCinemaHalls(halls);
-        Cinema saved = cinemaRepository.save(cinema);
-        return cinemaMapper.toCinemaDTO(saved);
+        if (cinemaRepository.existsByName(dto.getName())) throw new RuntimeException("Cinema exists");
+        return cinemaMapper.toCinemaDTO(cinemaRepository.save(cinemaMapper.toCinemaEntity(dto)));
     }
 
     @Override
@@ -53,32 +42,13 @@ public class CinemaServiceImpl implements CinemaService {
 
     @Override
     public CinemaResponseDTO updateCinema(Long id, CinemaRequestDTO dto) {
-        Cinema cinema = cinemaRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cinema not found: " + id));
-
+        Cinema cinema = cinemaRepository.findById(id).orElseThrow(() -> new RuntimeException("Cinema not found"));
         cinema.setName(dto.getName());
-        cinema.setLocation(dto.getLocation());
+        cinema.setAddress(dto.getAddress());
         cinema.setPhoneNumber(dto.getPhoneNumber());
         cinema.setOpenTime(dto.getOpenTime());
         cinema.setCloseTime(dto.getCloseTime());
-
-        if (dto.getHallNames() != null) {
-            if (cinema.getCinemaHalls() != null) {
-                cinema.getCinemaHalls().clear();
-            } else {
-                cinema.setCinemaHalls(new ArrayList<>());
-            }
-
-            for (String hallName : dto.getHallNames()) {
-                CinemaHall hall = new CinemaHall();
-                hall.setName(hallName);
-                hall.setCinema(cinema);
-                cinema.getCinemaHalls().add(hall);
-            }
-        }
-
-        Cinema updated = cinemaRepository.save(cinema);
-        return cinemaMapper.toCinemaDTO(updated);
+        return cinemaMapper.toCinemaDTO(cinemaRepository.save(cinema));
     }
 
     @Override

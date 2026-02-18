@@ -23,7 +23,7 @@ public class Cinema {
     private Long id;
 
     private String name;
-    private String location;
+    private String address;
     private String phoneNumber;
 
     @JsonFormat(pattern = "HH:mm:ss")
@@ -34,6 +34,6 @@ public class Cinema {
     @DateTimeFormat(pattern = "HH:mm:ss")
     private LocalTime closeTime;
 
-    @OneToMany(mappedBy = "cinema")
+    @OneToMany(mappedBy = "cinema", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CinemaHall> cinemaHalls;
 }

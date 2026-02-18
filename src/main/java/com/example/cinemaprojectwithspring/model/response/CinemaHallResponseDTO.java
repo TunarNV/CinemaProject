@@ -5,16 +5,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ScheduleResponseDTO {
+public class CinemaHallResponseDTO {
     private Long id;
-    private String movieName;
-    private String cinemaName;
-    private String hallName;
-    private LocalDateTime startTime;
-    private Integer ticketPrice;
+    private String name;
+    private CinemaResponseDTO cinema;
 }

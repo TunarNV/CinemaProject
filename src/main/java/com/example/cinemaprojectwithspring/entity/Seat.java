@@ -6,29 +6,22 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.math.BigDecimal;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "schedules")
-public class Schedule {
+@Table(name = "seats")
+public class Seat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private LocalDateTime startTime;
-
-    private Integer ticketPrice;
-
-    @ManyToOne
-    @JoinColumn(name = "movie_id")
-    private Movie movie;
-
-    @ManyToOne
-    @JoinColumn(name = "cinema_hall_id")
-    private CinemaHall hall;
-
+    private int row;
+    private int number;
+    private BigDecimal price;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cinema_hall_id", nullable = false)
+    private CinemaHall cinemaHall;
 }

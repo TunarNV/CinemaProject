@@ -5,16 +5,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MovieResponseDTO {
+public class SessionResponseDTO {
     private Long id;
-    private String title;
-    private String description;
-    private int durationMinutes;
-    private String genre;
-    private double rating;
-    private CategoryResponseDTO category;
+    private MovieResponseDTO movie;
+    private CinemaHallResponseDTO cinemaHall;
+    private LocalDateTime startTime;
 }

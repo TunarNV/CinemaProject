@@ -18,7 +18,7 @@ import java.util.List;
 public class CinemaRequestDTO {
     private String name;
 
-    private String location;
+    private String address;
 
     private String phoneNumber;
 
@@ -32,5 +32,4 @@ public class CinemaRequestDTO {
     @DateTimeFormat(pattern = "HH:mm:ss")
     private LocalTime closeTime;
 
-    private List<String> hallNames;
 }
