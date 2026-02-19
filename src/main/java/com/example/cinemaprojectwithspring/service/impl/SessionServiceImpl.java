@@ -13,6 +13,7 @@ import com.example.cinemaprojectwithspring.service.SessionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -28,6 +29,7 @@ public class SessionServiceImpl implements SessionService {
 
 
     @Override
+    @Transactional
     public SessionResponseDTO createSession(SessionRequestDTO dto) {
 
         Movie movie = movieRepository.findById(dto.getMovieId())
@@ -51,6 +53,7 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<SessionResponseDTO> getAllSessions() {
         return sessionRepository.findAll()
                 .stream()
@@ -67,10 +70,19 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
+    @Transactional
     public void deleteSession(Long id) {
       if (!sessionRepository.existsById(id)){
           throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Session not found: " + id);
       }
       sessionRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public SessionResponseDTO getById(Long id) {
+        return sessionRepository.findById(id)
+                .map(sessionMapper::toDTO)
+                .orElseThrow(() -> new RuntimeException("Session not found: " + id));
     }
 }

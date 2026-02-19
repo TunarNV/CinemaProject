@@ -1,12 +1,15 @@
 package com.example.cinemaprojectwithspring.service.impl;
 
 import com.example.cinemaprojectwithspring.entity.Ticket;
+import com.example.cinemaprojectwithspring.mapper.TicketMapper;
 import com.example.cinemaprojectwithspring.model.enums.TicketStatus;
+import com.example.cinemaprojectwithspring.model.response.TicketResponseDTO;
 import com.example.cinemaprojectwithspring.repository.SeatRepository;
 import com.example.cinemaprojectwithspring.repository.SessionRepository;
 import com.example.cinemaprojectwithspring.repository.TicketRepository;
 import com.example.cinemaprojectwithspring.repository.UserRepository;
 import com.example.cinemaprojectwithspring.service.BookingService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,13 +30,16 @@ public class BookingServiceImpl implements BookingService {
     private final SessionRepository sessionRepository;
     private final SeatRepository seatRepository;
     private final UserRepository userRepository;
+    private final TicketMapper ticketMapper;
 
 
     @Override
-    public Ticket reserve(Long sessionId, Long seatId, Long userId) {
+    @Transactional
+    public TicketResponseDTO reserve(Long sessionId, Long seatId, Long userId) {
 
         if (ticketRepository.existsBySessionIdAndSeatIdAndStatusIn(
-                sessionId, seatId,
+                sessionId,
+                seatId,
                 List.of(TicketStatus.RESERVED, TicketStatus.CONFIRMED))) {
             throw new RuntimeException("Seat already booked");
         }
@@ -46,7 +52,6 @@ public class BookingServiceImpl implements BookingService {
         ticket.setReservedAt(LocalDateTime.now());
         ticket.setPrice(ticket.getSeat().getPrice());
 
-
-        return ticketRepository.save(ticket);
+        return ticketMapper.toDTO(ticketRepository.save(ticket));
     }
 }

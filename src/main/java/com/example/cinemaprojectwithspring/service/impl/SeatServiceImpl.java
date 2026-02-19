@@ -15,6 +15,7 @@ import com.example.cinemaprojectwithspring.service.SeatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -31,6 +32,7 @@ public class SeatServiceImpl implements SeatService {
 
 
     @Override
+    @Transactional
     public SeatResponseDTO createSeat(SeatRequestDTO dto) {
 
         CinemaHall cinemaHall = cinemaHallRepository.findById(dto.getCinemaHallId()).
@@ -49,6 +51,7 @@ public class SeatServiceImpl implements SeatService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<SeatResponseDTO> getSeatsByHall(Long hallId) {
         return seatRepository.findByCinemaHallId(hallId)
                 .stream()
@@ -57,6 +60,7 @@ public class SeatServiceImpl implements SeatService {
     }
 
     @Override
+    @Transactional
     public SeatResponseDTO updateSeat(Long id, SeatRequestDTO dto) {
 
         Seat seat = seatRepository.findById(id).orElseThrow(() -> new RuntimeException("Seat not found"));
@@ -69,6 +73,7 @@ public class SeatServiceImpl implements SeatService {
     }
 
     @Override
+    @Transactional
     public void deleteSeat(Long id) {
         if (!seatRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Seat not found: " + id);
@@ -77,6 +82,7 @@ public class SeatServiceImpl implements SeatService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<SeatResponseDTO> getAvailableSeats(Long sessionId) {
 
         Session session = sessionRepository.findById(sessionId)
@@ -92,5 +98,13 @@ public class SeatServiceImpl implements SeatService {
                 .filter(seat -> !bookedSeatIds.contains(seat.getId()))
                 .map(seatMapper::toDTO)
                 .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public SeatResponseDTO getById(Long id) {
+        return seatRepository.findById(id)
+                .map(seatMapper::toDTO)
+                .orElseThrow(() -> new RuntimeException("Seat not found: " + id));
     }
 }

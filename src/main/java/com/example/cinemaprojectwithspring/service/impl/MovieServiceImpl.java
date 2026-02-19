@@ -11,6 +11,7 @@ import com.example.cinemaprojectwithspring.service.MovieService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -24,6 +25,7 @@ public class MovieServiceImpl implements MovieService {
     private final CategoryRepository categoryRepository;
 
     @Override
+    @Transactional
     public MovieResponseDTO createMovie(MovieRequestDTO requestDTO) {
         Category category = categoryRepository.findById(requestDTO.getCategoryId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
@@ -34,11 +36,13 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<MovieResponseDTO> getAllMovies() {
         return movieRepository.findAll().stream().map(movieMapper::toMovieDTO).toList();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public MovieResponseDTO getMovieById(Long id) {
         Movie movie = movieRepository.findById(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,
                 "Movie not found: " + id));
@@ -46,6 +50,7 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
+    @Transactional
     public MovieResponseDTO update(Long id, MovieRequestDTO movieRequestDTO){
         Movie movie = movieRepository.findById(id).orElseThrow(() ->
                 new ResponseStatusException
@@ -64,6 +69,7 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
+    @Transactional
     public void deleteMovieById(Long id) {
         if (!movieRepository.existsById(id)) {
            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Movie not found: " + id);

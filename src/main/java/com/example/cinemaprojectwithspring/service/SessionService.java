@@ -14,5 +14,6 @@ public interface SessionService {
     List<SessionResponseDTO> getSessionsByMovie(Long movieId);
 
     void deleteSession(Long id);
+    SessionResponseDTO getById(Long id);
 
 }

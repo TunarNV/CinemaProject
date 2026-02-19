@@ -8,6 +8,7 @@ import com.example.cinemaprojectwithspring.repository.UserRepository;
 import com.example.cinemaprojectwithspring.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,6 +21,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
+    @Transactional(readOnly = true)
     public List<UserResponseDTO> getAllUsers() {
         return userRepository.findAll()
                 .stream()
@@ -28,6 +30,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void blockUser(Long id) {
 
         User user = userRepository.findById(id)
@@ -35,5 +38,13 @@ public class UserServiceImpl implements UserService {
         user.setStatus(UserStatus.BLOCKED);
         userRepository.save(user);
 
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UserResponseDTO getById(Long id) {
+        return userRepository.findById(id)
+                .map(userMapper::toResponse)
+                .orElseThrow(() -> new RuntimeException("User not found: " + id));
     }
 }

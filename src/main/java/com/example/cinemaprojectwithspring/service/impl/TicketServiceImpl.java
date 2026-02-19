@@ -8,6 +8,7 @@ import com.example.cinemaprojectwithspring.repository.TicketRepository;
 import com.example.cinemaprojectwithspring.service.TicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -19,12 +20,14 @@ public class TicketServiceImpl implements TicketService {
     private final TicketMapper ticketMapper;
 
     @Override
+    @Transactional(readOnly = true)
     public TicketResponseDTO getTicketById(Long id) {
         return ticketRepository.findById(id).map(ticketMapper::toDTO)
                 .orElseThrow(() -> new RuntimeException("Ticket not found"));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<TicketResponseDTO> getUserTickets(Long userId) {
         return ticketRepository.findByUserId(userId)
                 .stream()
@@ -33,6 +36,7 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
+    @Transactional
     public void cancelTicket(Long ticketId) {
         Ticket ticket = ticketRepository.findById(ticketId)
                 .orElseThrow(() -> new RuntimeException("Ticket not found"));

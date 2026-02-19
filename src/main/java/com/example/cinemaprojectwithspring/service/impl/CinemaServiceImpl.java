@@ -11,6 +11,7 @@ import com.example.cinemaprojectwithspring.service.CinemaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
@@ -25,12 +26,14 @@ public class CinemaServiceImpl implements CinemaService {
 
 
     @Override
+    @Transactional
     public CinemaResponseDTO createCinema(CinemaRequestDTO dto) {
         if (cinemaRepository.existsByName(dto.getName())) throw new RuntimeException("Cinema exists");
         return cinemaMapper.toCinemaDTO(cinemaRepository.save(cinemaMapper.toCinemaEntity(dto)));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public CinemaResponseDTO getCinemaById(Long id) {
         Cinema cinema = cinemaRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
@@ -41,6 +44,7 @@ public class CinemaServiceImpl implements CinemaService {
 
 
     @Override
+    @Transactional
     public CinemaResponseDTO updateCinema(Long id, CinemaRequestDTO dto) {
         Cinema cinema = cinemaRepository.findById(id).orElseThrow(() -> new RuntimeException("Cinema not found"));
         cinema.setName(dto.getName());
@@ -52,6 +56,7 @@ public class CinemaServiceImpl implements CinemaService {
     }
 
     @Override
+    @Transactional
     public void deleteCinema(Long id) {
         if (!cinemaRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cinema not found: " + id);

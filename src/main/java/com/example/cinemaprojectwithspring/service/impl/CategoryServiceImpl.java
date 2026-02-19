@@ -9,15 +9,11 @@ import com.example.cinemaprojectwithspring.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
-/*
-    todo
-        Bütün service qatlarında Transactional annotationu istifadə edilməlidir
-        OSİV (open-session in view haqqında məlumat al)
- */
 @Service
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
@@ -25,18 +21,21 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryMapper categoryMapper;
 
     @Override
+    @Transactional
     public CategoryResponseDTO createCategory(CategoryRequestDTO dto) {
-        // todo məsləhətdir ki, RuntimeException əvəzinə ya spesifik exception atasan yada ki, ResponseStatusException atasan
-        if (categoryRepository.existsByName(dto.getName())) throw new RuntimeException("Category exists");
+        if (categoryRepository.existsByName(dto.getName()))
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Category exists");
         return categoryMapper.toDTO(categoryRepository.save(categoryMapper.toEntity(dto)));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<CategoryResponseDTO> getAllCategories() {
        return categoryRepository.findAll().stream().map(categoryMapper::toDTO).toList();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public CategoryResponseDTO getCategoryById(Long id) {
         return  categoryRepository.findById(id).map(categoryMapper::toDTO)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
@@ -44,6 +43,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional
     public CategoryResponseDTO updateCategory(Long id, CategoryRequestDTO dto) {
         Category category = categoryRepository.findById(id).orElseThrow(() ->
                 new ResponseStatusException
@@ -54,6 +54,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional
     public void deleteCategoryById(Long id) {
       if (!categoryRepository.existsById(id))throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Category not found: " + id);
       categoryRepository.deleteById(id);

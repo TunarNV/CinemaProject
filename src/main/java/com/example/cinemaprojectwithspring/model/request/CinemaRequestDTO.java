@@ -1,6 +1,7 @@
 package com.example.cinemaprojectwithspring.model.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 public class CinemaRequestDTO {
 
-    // todo add spring data validation @NotBlank
+    @NotBlank
     private String name;
 
     private String address;
