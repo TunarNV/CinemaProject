@@ -5,6 +5,8 @@ import com.example.cinemaprojectwithspring.model.response.CinemaResponseDTO;
 import com.example.cinemaprojectwithspring.service.CinemaService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,23 +16,25 @@ public class CinemaController {
     private final CinemaService cinemaService;
 
     @GetMapping("/{id}")
-    public CinemaResponseDTO getCinemaById(@PathVariable Long id){
-        return cinemaService.getCinemaById(id);
+    public ResponseEntity<CinemaResponseDTO> getCinemaById(@PathVariable Long id){
+        return ResponseEntity.ok(cinemaService.getCinemaById(id));
     }
 
     @PostMapping
-    public CinemaResponseDTO createCinema(@RequestBody @Valid CinemaRequestDTO cinemaRequestDTO){
-        return cinemaService.createCinema(cinemaRequestDTO);
+    public ResponseEntity<CinemaResponseDTO> createCinema(@RequestBody @Valid CinemaRequestDTO cinemaRequestDTO){
+        return ResponseEntity.status(HttpStatus.CREATED).body(cinemaService.createCinema(cinemaRequestDTO));
     }
 
     @PutMapping("/{id}")
-    public CinemaResponseDTO updateMovie(@PathVariable Long id, @RequestBody CinemaRequestDTO cinemaRequestDTO){
-        return cinemaService.updateCinema(id,cinemaRequestDTO);
+    public ResponseEntity<CinemaResponseDTO>updateMovie(@PathVariable Long id, @RequestBody CinemaRequestDTO cinemaRequestDTO){
+        return  ResponseEntity.ok(cinemaService.updateCinema(id,cinemaRequestDTO));
     }
 
     @DeleteMapping("/{id}")
-    public void deleteMovieById(@PathVariable Long id){
+    public ResponseEntity<Void>  deleteMovieById(@PathVariable Long id){
+
         cinemaService.deleteCinema(id);
+        return ResponseEntity.noContent().build();
     }
 
 }

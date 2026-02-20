@@ -10,6 +10,7 @@ import com.example.cinemaprojectwithspring.repository.PaymentRepository;
 import com.example.cinemaprojectwithspring.repository.TicketRepository;
 import com.example.cinemaprojectwithspring.service.PaymentService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,7 @@ import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PaymentServiceImpl implements PaymentService {
 
     private final PaymentRepository paymentRepository;
@@ -28,12 +30,17 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     @Transactional
     public PaymentResponseDTO pay(Long ticketId) {
-
+        log.info("Payment attempt started for ticketId={}", ticketId);
         Ticket ticket = ticketRepository.findById(ticketId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found"));
-
-        if (ticket.getStatus() != TicketStatus.RESERVED)
+                .orElseThrow(() -> {
+                    log.error("Ticket not found for payment: ticketId={}", ticketId);
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found");
+                });
+        if (ticket.getStatus() != TicketStatus.RESERVED) {
+            log.warn("Ticket not in RESERVED status, cannot pay: ticketId={}, status={}", ticketId, ticket.getStatus());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ticket not reservable");
+        }
+
 
         Payment payment = new Payment();
         payment.setTicket(ticket);
@@ -45,7 +52,8 @@ public class PaymentServiceImpl implements PaymentService {
 
         ticketRepository.save(ticket);
         Payment savedPayment = paymentRepository.save(payment);
-
+        log.info("Payment successful: paymentId={}, ticketId={}, amount={}",
+                savedPayment.getId(), ticketId, savedPayment.getAmount());
         return paymentMapper.toDTO(savedPayment);
     }
 }

@@ -12,6 +12,7 @@ import com.example.cinemaprojectwithspring.model.response.UserResponseDTO;
 import com.example.cinemaprojectwithspring.repository.UserRepository;
 import com.example.cinemaprojectwithspring.service.AuthService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,6 +23,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
@@ -33,11 +35,16 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public UserResponseDTO register(UserRequestDTO request) {
 
-        if (userRepository.existsByUsername(request.getUsername()))
+        log.info("Trying to register user with username: {}", request.getUsername());
+        if (userRepository.existsByUsername(request.getUsername())) {
+            log.warn("Registration failed: username {} already exists", request.getUsername());
             throw new RuntimeException("Username already exists");
+        }
 
-        if (userRepository.existsByEmail(request.getEmail()))
+        if (userRepository.existsByEmail(request.getEmail())) {
+            log.warn("Registration failed: email {} already exists", request.getEmail());
             throw new RuntimeException("Email already exists");
+        }
 
         User user = userMapper.toEntity(request);
 
@@ -46,13 +53,13 @@ public class AuthServiceImpl implements AuthService {
         user.setStatus(UserStatus.ACTIVE);
 
         User saved = userRepository.save(user);
-
+        log.info("User {} registered successfully with id: {}", saved.getUsername(), saved.getId());
         return userMapper.toResponse(saved);
     }
 
     @Override
     public LoginResponseDTO login(LoginRequestDTO request) {
-
+        log.info("User {} attempting to login", request.getUsername());
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getUsername(),
@@ -68,7 +75,7 @@ public class AuthServiceImpl implements AuthService {
                 );
 
         String token = jwtService.generateToken(userDetails);
-
+        log.info("User {} logged in successfully, token generated", request.getUsername());
         return new LoginResponseDTO(request.getUsername(), token);
     }
 }

@@ -20,7 +20,8 @@ public class Seat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private int row;
+    @Column(name = "seat_row")
+    private int rowNumber;
 
     private int number;
 

@@ -9,5 +9,6 @@ import java.util.List;
 @Repository
 public interface SeatRepository extends JpaRepository<Seat, Long> {
     List<Seat> findByCinemaHallId(Long cinemaHallId);
-    boolean existsByRowAndNumberAndCinemaHallId(int row, int number, Long cinemaHallId);
+
+    boolean existsByRowNumberAndNumberAndCinemaHallId(int rowNumber, int number, Long cinemaHallId);
 }

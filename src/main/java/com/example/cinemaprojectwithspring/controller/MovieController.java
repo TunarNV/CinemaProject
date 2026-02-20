@@ -1,11 +1,11 @@
 package com.example.cinemaprojectwithspring.controller;
-
-import com.example.cinemaprojectwithspring.entity.Movie;
 import com.example.cinemaprojectwithspring.model.request.MovieRequestDTO;
 import com.example.cinemaprojectwithspring.model.response.MovieResponseDTO;
 import com.example.cinemaprojectwithspring.service.MovieService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,25 +16,27 @@ public class MovieController {
     private final MovieService movieService;
 
     @GetMapping("/{id}")
-    public MovieResponseDTO getMovieById(@PathVariable Long id){
-        return movieService.getMovieById(id);
+    public ResponseEntity<MovieResponseDTO>  getMovieById(@PathVariable Long id){
+        return ResponseEntity.ok(movieService.getMovieById(id));
     }
 
     @PostMapping
-    public MovieResponseDTO createMovie(@RequestBody @Valid MovieRequestDTO requestDTO){
-        return movieService.createMovie(requestDTO);
+    public ResponseEntity<MovieResponseDTO> createMovie(@RequestBody @Valid MovieRequestDTO requestDTO){
+        return ResponseEntity.status(HttpStatus.CREATED).body(movieService.createMovie(requestDTO));
+
     }
 
     @PutMapping("/{id}")
-    public MovieResponseDTO updateMovie(@PathVariable Long id, @RequestBody MovieRequestDTO movieRequestDTO){
-        return movieService.update(id,movieRequestDTO);
+    public ResponseEntity<MovieResponseDTO> updateMovie(@PathVariable Long id, @RequestBody MovieRequestDTO movieRequestDTO){
+        return  ResponseEntity.ok(movieService.update(id,movieRequestDTO));
     }
 
     @DeleteMapping("/{id}")
-    public void deleteMovieById(@PathVariable Long id){
-        movieService.deleteMovieById(id);
-    }
+    public ResponseEntity<Void> deleteMovieById(@PathVariable Long id){
 
+        movieService.deleteMovieById(id);
+        return ResponseEntity.noContent().build();
+    }
 
 
 }

@@ -15,5 +15,6 @@ public interface SeatService {
     void deleteSeat(Long id);
 
     List<SeatResponseDTO> getAvailableSeats(Long sessionId);
+
     SeatResponseDTO getById(Long id);
 }
